@@ -12,7 +12,7 @@ namespace ListenList.Repositories
     {
         public PlaylistRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<Playlist> GetAll()
+        public List<Playlist> GetAllPlaylists()
         {
             using (var conn = Connection)
             {
@@ -35,7 +35,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public object GetbyId(int id)
+        public object GetbyPlaylistId(int id)
         {
             using (var conn = Connection)
             {
@@ -58,28 +58,50 @@ namespace ListenList.Repositories
                 }
             }
         }
+        //public object GetbyUserProfileId(int id)
+        //{
+        //    using (var conn = Connection)
+        //    {
+        //        conn.Open();
+        //        using (var cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = PlaylistQuery + " WHERE q.id = @Id";
+        //            DbUtils.AddParameter(cmd, "@Id", id);
 
-        public void Add(Playlist playlist)
+        //            Playlist playlist = null;
+
+        //            var reader = cmd.ExecuteReader();
+        //            if (reader.Read())
+        //            {
+        //                playlist = NewPlaylist(reader);
+        //            }
+        //            reader.Close();
+
+        //            return playlist;
+        //        }
+        //    }
+        //}
+        public void AddPlaylist(Playlist playlist)
         {
             using (var conn = Connection)
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Playlist (Name, Image, EpisodePlaylistId, UserId)
+                    cmd.CommandText = @"INSERT INTO Playlist (Name, Image, EpisodePlaylistId, UserProfileId)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@Name, @Image, @EpisodePlaylistId, @UserId)";
+                                        VALUES (@Name, @Image, @EpisodePlaylistId, @UserProfileId)";
                     DbUtils.AddParameter(cmd, "@Name", playlist.Name);
                     DbUtils.AddParameter(cmd, "@Image", playlist.Image);
                     DbUtils.AddParameter(cmd, "@EpisodePlaylistId", playlist.EpisodePlaylistId);
-                    DbUtils.AddParameter(cmd, "@UserId", playlist.UserId);
+                    DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
 
                     playlist.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
 
-        public void Update(Playlist episode)
+        public void UpdatePlaylist(Playlist playlist)
         {
             using (var conn = Connection)
             {
@@ -91,21 +113,22 @@ namespace ListenList.Repositories
                            SET Name = @Name,
                                Image = @Image,
                                EpisodePlaylistId = @EpisodePlaylistId,
-                               UserId = @UserId,
+                               UserProfileId = @UserProfileId,
                             WHERE Id = @Id";
 
-                    DbUtils.AddParameter(cmd, "@Name", episode.Name);
-                    DbUtils.AddParameter(cmd, "@Image", episode.Image);
-                    DbUtils.AddParameter(cmd, "@EpisodePlaylistId", episode.EpisodePlaylistId);
-                    DbUtils.AddParameter(cmd, "@UserId", episode.UserId);
-                    DbUtils.AddParameter(cmd, "@Id", episode.Id);
+                    DbUtils.AddParameter(cmd, "@Name", playlist.Name);
+                    DbUtils.AddParameter(cmd, "@Image", playlist.Image);
+                    DbUtils.AddParameter(cmd, "@EpisodePlaylistId", playlist.EpisodePlaylistId);
+                    DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
+                    DbUtils.AddParameter(cmd, "@Id", playlist.Id);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void Delete(int id)
+        //not in action right now
+        public void DeletePlaylist(int id)
         {
             using (var conn = Connection)
             {
@@ -122,7 +145,7 @@ namespace ListenList.Repositories
         {
             get
             {
-                return @"SELECT e.Id, e.Name, e.Image, e.EpisodePlaylistId, e.UserId
+                return @"SELECT e.Id, e.Name, e.Image, e.EpisodePlaylistId, e.UserProfileId
                            FROM Playlist e";
             }
         }
@@ -135,7 +158,7 @@ namespace ListenList.Repositories
                 Name = DbUtils.GetString(reader, "Name"),
                 Image = DbUtils.GetString(reader, "Image"),
                 EpisodePlaylistId = DbUtils.GetInt(reader, "EpisodePlaylistId"),
-                UserId = DbUtils.GetInt(reader, "UserId")
+                UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
             };
         }
     }

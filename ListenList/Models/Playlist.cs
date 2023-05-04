@@ -18,7 +18,7 @@ namespace ListenList.Models
         public int EpisodePlaylistId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public int UserProfileId { get; set; }
 
     }
 }

@@ -1,10 +1,13 @@
 ﻿using ListenList.Models;
+using System.Collections.Generic;
 
 namespace ListenList.Repositories
 {
-    internal interface IUserProfileRepository
+    public interface IUserProfileRepository
     {
-        public UserProfile GetByFirebaseUserId(string firebaseuserProfileId);
+        public List<UserProfile> GetAll();
+        public UserProfile GetById(int id);
+        public UserProfile GetByFirebaseUserId(string firebaseUserId);
         public void Add(UserProfile userProfile);
     }
 }
