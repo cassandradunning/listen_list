@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace ListenList.Repositories
 {
-    internal interface IPlaylistRepository
+    public interface IPlaylistRepository
     {
-        public List<Playlist> GetAll();
-        public object GetbyId(int id);
-        public void Add(Playlist playlist);
-        public void Update(Playlist episode);
-        public void Delete(int id);
+        public List<Playlist> GetAllPlaylists();
+        public object GetbyPlaylistId(int id);
+        public void AddPlaylist(Playlist playlist);
+        public void UpdatePlaylist(Playlist playlist);
+        public void DeletePlaylist(int id);
     }
 }
