@@ -22,16 +22,16 @@ namespace ListenList.Repositories
                 {
                     cmd.CommandText = EpisodeQuery;
 
-                    var quotes = new List<Episode>();
+                    var episodes = new List<Episode>();
 
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        quotes.Add(NewEpisode(reader));
+                        episodes.Add(NewEpisode(reader));
                     }
                     reader.Close();
 
-                    return quotes;
+                    return episodes;
                 }
             }
         }
@@ -46,21 +46,21 @@ namespace ListenList.Repositories
                     cmd.CommandText = EpisodeQuery + " WHERE q.id = @Id";
                     DbUtils.AddParameter(cmd, "@Id", id);
 
-                    Episode quote = null;
+                    Episode episode = null;
 
                     var reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
-                        quote = NewEpisode(reader);
+                        episode = NewEpisode(reader);
                     }
                     reader.Close();
 
-                    return quote;
+                    return episode;
                 }
             }
         }
 
-        public void Add(Episode quote)
+        public void Add(Episode episode)
         {
             using (var conn = Connection)
             {
@@ -70,12 +70,12 @@ namespace ListenList.Repositories
                     cmd.CommandText = @"INSERT INTO Episode (Title, Description, URL, Image)
                                         OUTPUT INSERTED.ID
                                         VALUES (@Title, @Description, @URL, @Image)";
-                    DbUtils.AddParameter(cmd, "@Title", quote.Title);
-                    DbUtils.AddParameter(cmd, "@Description", quote.Description);
-                    DbUtils.AddParameter(cmd, "@URL", quote.URL);
-                    DbUtils.AddParameter(cmd, "@Image", quote.Image);
+                    DbUtils.AddParameter(cmd, "@Title", episode.Title);
+                    DbUtils.AddParameter(cmd, "@Description", episode.Description);
+                    DbUtils.AddParameter(cmd, "@URL", episode.URL);
+                    DbUtils.AddParameter(cmd, "@Image", episode.Image);
 
-                    quote.Id = (int)cmd.ExecuteScalar();
+                    episode.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
