@@ -13,7 +13,7 @@ namespace ListenList.Repositories
     {
         public EpisodeRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<Episode> GetAll()
+        public List<Episode> GetAllEpisodes()
         {
             using (var conn = Connection)
             {
@@ -36,7 +36,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public object GetbyId(int id)
+        public object GetbyEpisodeId(int id)
         {
             using (var conn = Connection)
             {
@@ -60,7 +60,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Add(Episode episode)
+        public void AddEpisode(Episode episode)
         {
             using (var conn = Connection)
             {
@@ -80,7 +80,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Update(Episode episode)
+        public void UpdateEpisode(Episode episode)
         {
             using (var conn = Connection)
             {
@@ -106,7 +106,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Delete(int id)
+        public void DeleteEpisode(int id)
         {
             using (var conn = Connection)
             {

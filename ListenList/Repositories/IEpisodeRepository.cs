@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace ListenList.Repositories
 {
-    internal interface IEpisodeRepository
+    public interface IEpisodeRepository
     {
-        public List<Episode> GetAll();
-        public object GetbyId(int id);
-        public void Add(Episode quote);
-        public void Update(Episode episode);
-        public void Delete(int id);
+        public List<Episode> GetAllEpisodes();
+        public object GetbyEpisodeId(int id);
+        public void AddEpisode(Episode quote);
+        public void UpdateEpisode(Episode episode);
+        public void DeleteEpisode(int id);
     }
 }
