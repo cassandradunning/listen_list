@@ -93,7 +93,7 @@ namespace ListenList.Repositories
                                Description = @Description,
                                URL = @URL,
                                Image = @Image
-                            WHERE Id = @id";
+                            WHERE Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Title", episode.Title);
                     DbUtils.AddParameter(cmd, "@Description", episode.Description);
