@@ -10,6 +10,6 @@ namespace ListenList.Repositories
         public object GetbyEpisodeId(int id);
         public void AddEpisode(Episode quote);
         public void UpdateEpisode(Episode episode);
-        public void DeleteEpisode(int id);
+        
     }
 }

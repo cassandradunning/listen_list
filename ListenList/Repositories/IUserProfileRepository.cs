@@ -5,9 +5,9 @@ namespace ListenList.Repositories
 {
     public interface IUserProfileRepository
     {
-        public List<UserProfile> GetAll();
-        public UserProfile GetById(int id);
+        public List<UserProfile> GetAllUsers();
+        public UserProfile GetByUserId(int id);
         public UserProfile GetByFirebaseUserId(string firebaseUserId);
-        public void Add(UserProfile userProfile);
+        public void AddUsers(UserProfile userProfile);
     }
 }

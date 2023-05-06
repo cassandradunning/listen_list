@@ -5,10 +5,10 @@ namespace ListenList.Repositories
 {
     public interface IPlaylistRepository
     {
-        public List<Playlist> GetAllPlaylists();
-        public object GetbyPlaylistId(int id);
+        public Playlist GetPlaylistById(int id);
+        public List<Playlist> GetPlaylist();
         public void AddPlaylist(Playlist playlist);
-        public void UpdatePlaylist(Playlist playlist);
-        public void DeletePlaylist(int id);
+      
+
     }
 }

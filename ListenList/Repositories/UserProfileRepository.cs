@@ -11,7 +11,7 @@ namespace ListenList.Repositories
     {
         public UserProfileRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<UserProfile> GetAll()
+        public List<UserProfile> GetAllUsers()
         {
             using (var conn = Connection)
             {
@@ -43,7 +43,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public UserProfile GetById(int id)
+        public UserProfile GetByUserId(int id)
         {
             using (var conn = Connection)
             {
@@ -55,6 +55,8 @@ namespace ListenList.Repositories
                     p.[Name], p.Image, p.EpisodePlaylistId, p.UserProfileId
                     FROM UserProfile up
                     LEFT JOIN Playlist p ON p.UserProfileId = up.Id
+                    LEFT JOIN EpisodePlaylist ep ON ep.EpisodeId = p.EpisodePlaylistId
+                    LEFT JOIN Episode e ON e.Id = ep.EpisodeId
                     WHERE up.Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
@@ -72,7 +74,7 @@ namespace ListenList.Repositories
                                     Name = DbUtils.GetString(reader, "Name"),
                                     FirebaseUserId = DbUtils.GetString(reader, "FirebaseUserId"),
                                     Username = DbUtils.GetString(reader, "Username"),
-                                    Email = DbUtils.GetString(reader, "Email"),
+                                    Email = DbUtils.GetString(reader, "Email"), 
                                     About = DbUtils.GetString(reader, "About"),
                                     Image = DbUtils.GetString(reader, "Image"),
                                     Playlists = new List<Playlist>()
@@ -85,8 +87,7 @@ namespace ListenList.Repositories
                                 {
                                     Id = DbUtils.GetInt(reader, "PlaylistId"),
                                     Name = DbUtils.GetString(reader, "Name"),
-                                    Image = DbUtils.GetString(reader, "Image"),
-                                    EpisodePlaylistId = DbUtils.GetInt(reader, "EpisodePlaylistId")
+                                    Image = DbUtils.GetString(reader, "Image")                                   
                                 });  
                             }
                         }
@@ -132,7 +133,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Add(UserProfile userProfile)
+        public void AddUsers(UserProfile userProfile)
                     {
             using (var conn = Connection)
             {

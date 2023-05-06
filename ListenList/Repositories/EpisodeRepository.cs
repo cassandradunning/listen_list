@@ -43,7 +43,7 @@ namespace ListenList.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = EpisodeQuery + " WHERE q.id = @Id";
+                    cmd.CommandText = EpisodeQuery + " WHERE e.id = @Id";
                     DbUtils.AddParameter(cmd, "@Id", id);
 
                     Episode episode = null;
@@ -92,8 +92,8 @@ namespace ListenList.Repositories
                            SET Title = @Title,
                                Description = @Description,
                                URL = @URL,
-                               Image = @Image,
-                            WHERE Id = @Id";
+                               Image = @Image
+                            WHERE Id = @id";
 
                     DbUtils.AddParameter(cmd, "@Title", episode.Title);
                     DbUtils.AddParameter(cmd, "@Description", episode.Description);

@@ -60,13 +60,7 @@ namespace ListenList.Controllers
             return NoContent();
         }
 
-        //not in action right now
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            _episodeRepository.DeleteEpisode(id);
-            return NoContent();
-        }
+       
 
         private UserProfile GetCurrentUserProfile()
         {
