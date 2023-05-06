@@ -19,17 +19,11 @@ namespace ListenList.Controllers
                 _userProfileRepository = userProfileRepository;
             }
 
-            [HttpGet]
-            public IActionResult Get()
-            {
-                return Ok(_playlistRepository.GetAllPlaylists());
-            }
-
            
             [HttpGet("{id}")]
             public IActionResult Get(int id)
             {
-                var playlist = _playlistRepository.GetbyPlaylistId(id);
+                var playlist = _playlistRepository.GetPlaylistById(id);
                 if (playlist == null)
                 {
                     return NotFound();
@@ -37,9 +31,13 @@ namespace ListenList.Controllers
                 return Ok(playlist);
             }
 
-            
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(_playlistRepository.GetPlaylist());
+        }
 
-            [HttpPost]
+        [HttpPost]
             public IActionResult Post(Playlist playlist)
             {
                 var currentUserProfile = GetCurrentUserProfile();
@@ -52,27 +50,11 @@ namespace ListenList.Controllers
                 return CreatedAtAction(nameof(Get), new { id = playlist.Id }, playlist);
             }
 
-            [HttpPut("{id}")]
-            public IActionResult Put(int id, Playlist playlist)
-            {
-                if (id != playlist.Id)
-                {
-                    return BadRequest();
-                }
+        
 
-                _playlistRepository.UpdatePlaylist(playlist);
-                return NoContent();
-            }
 
-            //not in action right now
-            [HttpDelete("{id}")]
-            public IActionResult Delete(int id)
-            {
-                _playlistRepository.DeletePlaylist(id);
-                return NoContent();
-            }
 
-            private UserProfile GetCurrentUserProfile()
+        private UserProfile GetCurrentUserProfile()
             {
                 var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);

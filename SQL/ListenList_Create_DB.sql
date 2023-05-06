@@ -18,7 +18,6 @@ CREATE TABLE [Playlist] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [Name] varchar(55) NOT NULL,
   [Image] varchar(255) NOT NULL,
-  [EpisodePlaylistId] int NOT NULL,
   [UserProfileId] int NOT NULL
 )
 GO
@@ -34,10 +33,10 @@ CREATE TABLE [UserProfile] (
 )
 GO
 
-ALTER TABLE [EpisodePlaylist] ADD FOREIGN KEY ([EpisodeId]) REFERENCES [Episode] (Id) ON DELETE CASCADE
+ALTER TABLE [EpisodePlaylist] ADD FOREIGN KEY ([EpisodeId]) REFERENCES [Episode] ([Id]) ON DELETE CASCADE
 GO
 
-ALTER TABLE [Playlist] ADD FOREIGN KEY ([EpisodePlaylistId]) REFERENCES [EpisodePlaylist] (Id) ON DELETE CASCADE
+ALTER TABLE [EpisodePlaylist] ADD FOREIGN KEY ([PlaylistId]) REFERENCES [Playlist] ([Id])
 GO
 
 ALTER TABLE [Playlist] ADD FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id]) ON DELETE CASCADE

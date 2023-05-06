@@ -15,10 +15,10 @@ VALUES (1, 1),
        (5, 3);
 
 
-INSERT INTO [Playlist] ([Name], [Image], [EpisodePlaylistId], [UserProfileId])
-VALUES ('Favorites', 'http://example.com/favorites.jpg', 1, 1),
-       ('To Listen', 'http://example.com/tolisten.jpg', 2, 2),
-       ('Top Episodes', 'http://example.com/topepisodes.jpg', 5, 3);
+INSERT INTO [Playlist] ([Name], [Image], [UserProfileId])
+VALUES ('Favorites', 'http://example.com/favorites.jpg', 1),
+       ('To Listen', 'http://example.com/tolisten.jpg', 2),
+       ('Top Episodes', 'http://example.com/topepisodes.jpg', 3);
 
 
 INSERT INTO [UserProfile] ([Name], [FirebaseUserId], [Username], [Email], [About], [Image])
@@ -26,3 +26,6 @@ VALUES ('John Doe', '5Jjdp9QVLLQwgqJMrAejpe3Frmm2', 'johndoe', 'johndoe@example.
        ('Jane Smith', 'NkIZ0HIzKOYwNsIgNOPk79lbKBk2', 'janesmith', 'janesmith@example.com', 'I enjoy discovering new podcasts.', 'http://example.com/janesmith.jpg'),
        ('Mike Johnson', '1zSRy0XS97UqDrhR9Rc6UHjZ6pE3', 'mikejohnson', 'mikejohnson@example.com', 'I am a podcast enthusiast.', 'http://example.com/mikejohnson.jpg'),
        ('Rocky Roll','uoP3JcPROygy71JMo6OJTYAMHF33', 'rockyroll', 'rocky@roll.com', 'lets rock', 'https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Rocket_J._Squirrel.png/250px-Rocket_J._Squirrel.png');
+
+
+

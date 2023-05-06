@@ -12,96 +12,9 @@ namespace ListenList.Repositories
     {
         public PlaylistRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<Playlist> GetAllPlaylists()
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = PlaylistQuery;
+        
 
-                    var playlists = new List<Playlist>();
-
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        playlists.Add(NewPlaylist(reader));
-                    }
-                    reader.Close();
-
-                    return playlists;
-                }
-            }
-        }
-
-        public object GetbyPlaylistId(int id)
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = PlaylistQuery + " WHERE q.id = @Id";
-                    DbUtils.AddParameter(cmd, "@Id", id);
-
-                    Playlist playlist = null;
-
-                    var reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        playlist = NewPlaylist(reader);
-                    }
-                    reader.Close();
-
-                    return playlist;
-                }
-            }
-        }
-        //public object GetbyUserProfileId(int id)
-        //{
-        //    using (var conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (var cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = PlaylistQuery + " WHERE q.id = @Id";
-        //            DbUtils.AddParameter(cmd, "@Id", id);
-
-        //            Playlist playlist = null;
-
-        //            var reader = cmd.ExecuteReader();
-        //            if (reader.Read())
-        //            {
-        //                playlist = NewPlaylist(reader);
-        //            }
-        //            reader.Close();
-
-        //            return playlist;
-        //        }
-        //    }
-        //}
-        public void AddPlaylist(Playlist playlist)
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"INSERT INTO Playlist (Name, Image, EpisodePlaylistId, UserProfileId)
-                                        OUTPUT INSERTED.ID
-                                        VALUES (@Name, @Image, @EpisodePlaylistId, @UserProfileId)";
-                    DbUtils.AddParameter(cmd, "@Name", playlist.Name);
-                    DbUtils.AddParameter(cmd, "@Image", playlist.Image);
-                    DbUtils.AddParameter(cmd, "@EpisodePlaylistId", playlist.EpisodePlaylistId);
-                    DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
-
-                    playlist.Id = (int)cmd.ExecuteScalar();
-                }
-            }
-        }
-
-        public void UpdatePlaylist(Playlist playlist)
+        public Playlist GetPlaylistById(int id)
         {
             using (var conn = Connection)
             {
@@ -109,58 +22,109 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        UPDATE Playlist
-                           SET Name = @Name,
-                               Image = @Image,
-                               EpisodePlaylistId = @EpisodePlaylistId,
-                               UserProfileId = @UserProfileId,
-                            WHERE Id = @Id";
+                        SELECT  p.Id, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId
+                        FROM Playlist p
+                        WHERE p.Id = @Id";
+                    DbUtils.AddParameter(cmd, "@Id", id);
 
-                    DbUtils.AddParameter(cmd, "@Name", playlist.Name);
-                    DbUtils.AddParameter(cmd, "@Image", playlist.Image);
-                    DbUtils.AddParameter(cmd, "@EpisodePlaylistId", playlist.EpisodePlaylistId);
-                    DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
-                    DbUtils.AddParameter(cmd, "@Id", playlist.Id);
+                    Playlist playlist = null;
 
-                    cmd.ExecuteNonQuery();
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        playlist = new Playlist()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Name = DbUtils.GetString(reader, "PlaylistName"),
+                            Image = DbUtils.GetString(reader, "PlaylistImage"),
+                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
+
+                        };
+                    }
+                    reader.Close();
+
+                    return playlist;
                 }
             }
         }
-
-        //not in action right now
-        public void DeletePlaylist(int id)
+        public List<Playlist> GetPlaylist()
         {
             using (var conn = Connection)
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM Playlist WHERE Id = @Id";
-                    DbUtils.AddParameter(cmd, "@id", id);
-                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = @"
+                        SELECT  p.Id, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId
+                        FROM Playlist p
+                        ";
+                   
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var playlists = new List<Playlist>();
+                        while (reader.Read())
+                        {
+                            playlists.Add(new Playlist()
+                            {
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Name = DbUtils.GetString(reader, "PlaylistName"),
+                                Image = DbUtils.GetString(reader, "PlaylistImage"),
+                                UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
+                            }); 
+                        }
+                        return playlists;
+                    }
                 }
             }
         }
-        private string PlaylistQuery
+        public void AddPlaylist(Playlist playlist)
         {
-            get
+            using (var conn = Connection)
             {
-                return @"SELECT e.Id, e.Name, e.Image, e.EpisodePlaylistId, e.UserProfileId
-                           FROM Playlist e";
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Playlist (Name, Image, UserProfileId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@Name, @Image, @UserProfileId)";
+                    DbUtils.AddParameter(cmd, "@Name", playlist.Name);
+                    DbUtils.AddParameter(cmd, "@Image", playlist.Image);
+                    DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
+
+                    playlist.Id = (int)cmd.ExecuteScalar();
+                }
             }
         }
 
-        private Playlist NewPlaylist(SqlDataReader reader)
-        {
-            return new Playlist()
-            {
-                Id = DbUtils.GetInt(reader, "Id"),
-                Name = DbUtils.GetString(reader, "Name"),
-                Image = DbUtils.GetString(reader, "Image"),
-                EpisodePlaylistId = DbUtils.GetInt(reader, "EpisodePlaylistId"),
-                UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
-            };
-        }
+       
+
+
+        //private string PlaylistQuery
+        //{
+        //    get
+        //    {
+        //        return @"SELECT  p.Id AS PlaylistId, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId AS UserProfileId,
+        //                e.Title AS EpisodeTitle, e.Description, e.URL AS EpisodeURL, e.Image AS EpisodeImage,
+        //                up.Username
+        //                FROM Playlist p
+        //                JOIN EpisodePlaylist ep ON ep.PlaylistId = p.Id
+        //                JOIN Episode e ON e.Id = ep.EpisodeId
+        //                JOIN UserProfile up on p.UserProfileId = up.Id";
+        //    }
+        //}
+
+        //private Playlist NewPlaylist(SqlDataReader reader)
+        //{
+        //    return new Playlist()
+        //    {
+        //        Id = DbUtils.GetInt(reader, "Id"),
+        //        Name = DbUtils.GetString(reader, "Name"),
+        //        Image = DbUtils.GetString(reader, "Image"),
+        //        UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
+        //    };
+        //}
+
+
     }
 
 }

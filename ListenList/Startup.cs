@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ListenList
 {
@@ -27,26 +29,27 @@ namespace ListenList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //registered with our services
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
             services.AddTransient<IEpisodeRepository, EpisodeRepository>();
             services.AddTransient<IPlaylistRepository, PlaylistRepository>();
 
-            //var firebaseProjectId = Configuration.GetValue<string>("FirebaseProjectId");
-            //var googleTokenUrl = $"https://securetoken.google.com/{firebaseProjectId}";
-            //services
-            //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.Authority = googleTokenUrl;
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidIssuer = googleTokenUrl,
-            //            ValidateAudience = true,
-            //            ValidAudience = firebaseProjectId,
-            //            ValidateLifetime = true
-            //        };
-            //    });
+            var firebaseProjectId = Configuration.GetValue<string>("FirebaseProjectId");
+            var googleTokenUrl = $"https://securetoken.google.com/{firebaseProjectId}";
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = googleTokenUrl;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = googleTokenUrl,
+                        ValidateAudience = true,
+                        ValidAudience = firebaseProjectId,
+                        ValidateLifetime = true
+                    };
+                });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -18,5 +18,7 @@ namespace ListenList.Models
         [Required]
         public string Image { get; set; }
 
+        public Playlist Playlist { get; set; }
+
      }
 }

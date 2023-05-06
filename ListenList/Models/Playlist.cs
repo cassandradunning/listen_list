@@ -14,11 +14,11 @@ namespace ListenList.Models
         [MaxLength(55)]
         public string Image { get; set; }
 
-        [Required]
-        public int EpisodePlaylistId { get; set; }
-
+       
         [Required]
         public int UserProfileId { get; set; }
+
+        public Episode Episode { get; set; }   
 
     }
 }

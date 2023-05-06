@@ -13,7 +13,7 @@ namespace ListenList.Repositories
     {
         public EpisodeRepository(IConfiguration configuration) : base(configuration) { }
 
-        public List<Episode> GetAll()
+        public List<Episode> GetAllEpisodes()
         {
             using (var conn = Connection)
             {
@@ -36,14 +36,14 @@ namespace ListenList.Repositories
             }
         }
 
-        public object GetbyId(int id)
+        public object GetbyEpisodeId(int id)
         {
             using (var conn = Connection)
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = EpisodeQuery + " WHERE q.id = @Id";
+                    cmd.CommandText = EpisodeQuery + " WHERE e.id = @Id";
                     DbUtils.AddParameter(cmd, "@Id", id);
 
                     Episode episode = null;
@@ -60,7 +60,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Add(Episode episode)
+        public void AddEpisode(Episode episode)
         {
             using (var conn = Connection)
             {
@@ -80,7 +80,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Update(Episode episode)
+        public void UpdateEpisode(Episode episode)
         {
             using (var conn = Connection)
             {
@@ -92,8 +92,8 @@ namespace ListenList.Repositories
                            SET Title = @Title,
                                Description = @Description,
                                URL = @URL,
-                               Image = @Image,
-                            WHERE Id = @Id";
+                               Image = @Image
+                            WHERE Id = @id";
 
                     DbUtils.AddParameter(cmd, "@Title", episode.Title);
                     DbUtils.AddParameter(cmd, "@Description", episode.Description);
@@ -106,7 +106,7 @@ namespace ListenList.Repositories
             }
         }
 
-        public void Delete(int id)
+        public void DeleteEpisode(int id)
         {
             using (var conn = Connection)
             {
