@@ -19,7 +19,8 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT Id, Name, FirebaseUserId, Username, Email, About, Image FROM UserProfile";
+                    SELECT Id, [Name], FirebaseUserId, Username, Email, About, Image 
+                    FROM UserProfile";
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -140,9 +141,9 @@ namespace ListenList.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO userProfile (FirebaseUserId, [Name], Email, userProfilename, About, Image)
+                    cmd.CommandText = @"INSERT INTO userProfile (FirebaseUserId, [Name], Email, Username, About, Image)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@FirebaseUserId, @Name, @Email, @userProfilename, @About, @Image)";
+                                        VALUES (@FirebaseUserId, @Name, @Email, @Username, @About, @Image)";
                     DbUtils.AddParameter(cmd, "@FirebaseUserId", userProfile.FirebaseUserId);
                     DbUtils.AddParameter(cmd, "@Name", userProfile.Name);
                     DbUtils.AddParameter(cmd, "@Email", userProfile.Email);

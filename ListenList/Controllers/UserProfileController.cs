@@ -50,10 +50,10 @@ namespace ListenList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(UserProfile user)
+        public IActionResult Post(UserProfile userProfile)
         {
-            _userProfileRepository.AddUsers(user);
-            return CreatedAtAction("Get", new { id = user.Id }, user);
+            _userProfileRepository.AddUsers(userProfile);
+            return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
         }
 
         private UserProfile GetCurrentUser()
