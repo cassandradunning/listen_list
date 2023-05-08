@@ -7,8 +7,9 @@ using Microsoft.Extensions.Primitives;
 using System.Security.Claims;
 
 namespace ListenList.Controllers
-{
+{ 
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
@@ -18,14 +19,14 @@ namespace ListenList.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
-        [Authorize]
+        
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(_userProfileRepository.GetAllUsers());
         }
 
-        [Authorize]
+       
         [HttpGet("{firebaseUserId}")]
         public IActionResult Get(string firebaseUserId)
         {
@@ -37,7 +38,7 @@ namespace ListenList.Controllers
             return Ok(user);
         } 
 
-        [Authorize]
+        
         [HttpGet("DoesUserExist/{firebaseUserId}")]
         public IActionResult DoesUserExist(string firebaseUserId)
         {
@@ -50,7 +51,7 @@ namespace ListenList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(UserProfile userProfile)
+        public IActionResult Register(UserProfile userProfile)
         {
             _userProfileRepository.AddUsers(userProfile);
             return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
@@ -58,8 +59,10 @@ namespace ListenList.Controllers
 
         private UserProfile GetCurrentUser()
         {
+             
             var fireBaseId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             return _userProfileRepository.GetByFirebaseUserId(fireBaseId);
+               
         }
 
         [HttpGet("Me")]
