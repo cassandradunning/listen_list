@@ -19,7 +19,7 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT Id, [Name], FirebaseUserId, Username, Email, About, Image 
+                    SELECT Id, [Name], FirebaseUserId, Username, Email, Bio, Image 
                     FROM UserProfile";
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -34,7 +34,7 @@ namespace ListenList.Repositories
                                 FirebaseUserId = DbUtils.GetString(reader, "FirebaseUserId"),
                                 Username = DbUtils.GetString(reader, "Username"),
                                 Email = DbUtils.GetString(reader, "Email"),
-                                About = DbUtils.GetString(reader, "About"),
+                                Bio = DbUtils.GetString(reader, "Bio"),
                                 Image = DbUtils.GetString(reader, "Image")
                             });
                         }
@@ -52,7 +52,7 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT up.Id, up.[Name],up.FirebaseUserId, up.Username up.Email, up.About, up.Image, 
+                    SELECT up.Id, up.[Name],up.FirebaseUserId, up.Username up.Email, up.Bio, up.Image, 
                     p.[Name], p.Image, p.EpisodePlaylistId, p.UserProfileId
                     FROM UserProfile up
                     LEFT JOIN Playlist p ON p.UserProfileId = up.Id
@@ -76,7 +76,7 @@ namespace ListenList.Repositories
                                     FirebaseUserId = DbUtils.GetString(reader, "FirebaseUserId"),
                                     Username = DbUtils.GetString(reader, "Username"),
                                     Email = DbUtils.GetString(reader, "Email"), 
-                                    About = DbUtils.GetString(reader, "About"),
+                                    Bio = DbUtils.GetString(reader, "Bio"),
                                     Image = DbUtils.GetString(reader, "Image"),
                                     Playlists = new List<Playlist>()
                                 };
@@ -105,7 +105,7 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT up.Id, up.FirebaseUserId, up.[Name] AS UserProfileName, up.Email, up.Username, up.About, up.Image
+                        SELECT up.Id, up.FirebaseUserId, up.[Name] AS UserProfileName, up.Email, up.Username, up.Bio, up.Image
                         FROM userProfile up     
                         WHERE FirebaseUserId = @FirebaseUserId";
 
@@ -123,7 +123,7 @@ namespace ListenList.Repositories
                             Name = DbUtils.GetString(reader, "UserProfileName"),
                             Email = DbUtils.GetString(reader, "Email"),
                             Username = DbUtils.GetString(reader, "Username"),
-                            About = DbUtils.GetString(reader, "About"),
+                            Bio = DbUtils.GetString(reader, "Bio"),
                             Image = DbUtils.GetString(reader, "Image"),
                         };
                     }
@@ -141,14 +141,14 @@ namespace ListenList.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO userProfile (FirebaseUserId, [Name], Email, Username, About, Image)
+                    cmd.CommandText = @"INSERT INTO userProfile (FirebaseUserId, [Name], Email, Username, Bio, Image)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@FirebaseUserId, @Name, @Email, @Username, @About, @Image)";
+                                        VALUES (@FirebaseUserId, @Name, @Email, @Username, @Bio, @Image)";
                     DbUtils.AddParameter(cmd, "@FirebaseUserId", userProfile.FirebaseUserId);
                     DbUtils.AddParameter(cmd, "@Name", userProfile.Name);
                     DbUtils.AddParameter(cmd, "@Email", userProfile.Email);
                     DbUtils.AddParameter(cmd, "@Username", userProfile.Username);
-                    DbUtils.AddParameter(cmd, "@About", userProfile.About);
+                    DbUtils.AddParameter(cmd, "@Bio", userProfile.Bio);
                     DbUtils.AddParameter(cmd, "@Image", userProfile.Image);
 
                     userProfile.Id = (int)cmd.ExecuteScalar();

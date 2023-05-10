@@ -33,6 +33,7 @@ namespace ListenList
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
             services.AddTransient<IEpisodeRepository, EpisodeRepository>();
             services.AddTransient<IPlaylistRepository, PlaylistRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
 
             var firebaseProjectId = Configuration.GetValue<string>("FirebaseProjectId");
             var googleTokenUrl = $"https://securetoken.google.com/{firebaseProjectId}";

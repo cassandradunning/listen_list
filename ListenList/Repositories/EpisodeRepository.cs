@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using ListenList.Models;
 using ListenList.Repositories;
 using ListenList.Utils;
@@ -67,15 +68,28 @@ namespace ListenList.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Episode (Title, Description, URL, Image)
+                    cmd.CommandText = @"INSERT INTO Episode (Title, Description, URL, Image, CategoryId)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@Title, @Description, @URL, @Image)";
+                                        VALUES (@Title, @Description, @URL, @Image, @CategoryId)";
                     DbUtils.AddParameter(cmd, "@Title", episode.Title);
                     DbUtils.AddParameter(cmd, "@Description", episode.Description);
                     DbUtils.AddParameter(cmd, "@URL", episode.URL);
                     DbUtils.AddParameter(cmd, "@Image", episode.Image);
+                    DbUtils.AddParameter(cmd, "@CategoryId", episode.CategoryId);
 
                     episode.Id = (int)cmd.ExecuteScalar();
+
+                    foreach (var p in episode.PlaylistId)
+                    {
+                        cmd.CommandText = @"
+                            INSERT INTO EpisodePlaylist (EpisodeId, PlaylistId)
+                            VALUES(@EpisodeId, @PlaylistId)";
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.AddWithValue("@EpisodeId", episode.Id);
+                        cmd.Parameters.AddWithValue("@PlaylistId", p);
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
@@ -92,13 +106,15 @@ namespace ListenList.Repositories
                            SET Title = @Title,
                                Description = @Description,
                                URL = @URL,
-                               Image = @Image
+                               Image = @Image,
+                               CategoryId = @CategoryId
                             WHERE Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Title", episode.Title);
                     DbUtils.AddParameter(cmd, "@Description", episode.Description);
                     DbUtils.AddParameter(cmd, "@URL", episode.URL);
                     DbUtils.AddParameter(cmd, "@Image", episode.Image);
+                    DbUtils.AddParameter(cmd, "@CategoryId", episode.CategoryId);
                     DbUtils.AddParameter(cmd, "@Id", episode.Id);
 
                     cmd.ExecuteNonQuery();
@@ -123,8 +139,13 @@ namespace ListenList.Repositories
         {
             get
             {
-                return @"SELECT e.Id, e.Title, e.Description, e.URL, e.Image
-                           FROM Episode e";
+                return @"
+                        SELECT e.Id, e.Title, e.Description, e.URL, e.Image, 
+                        c.Id AS CategoryId, c.Name AS CategoryName,
+                        ep.Id AS EpisodePlayistId, ep.PlaylistId AS PlaylistId
+                           FROM Episode e
+                           LEFT JOIN Category c on e.CategoryId = c.Id
+                           LEFT JOIN EpisodePlaylist ep on ep.EpisodeId = e.Id";
             }
         }
 
@@ -136,7 +157,13 @@ namespace ListenList.Repositories
                 Title = DbUtils.GetString(reader, "Title"),
                 Description = DbUtils.GetString(reader, "Description"),
                 URL = DbUtils.GetString(reader, "URL"),
-                Image = DbUtils.GetString(reader,"Image")
+                Image = DbUtils.GetString(reader,"Image"),
+                Category = new Category()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                    Name = reader.GetString(reader.GetOrdinal("CategoryName"))
+                },
+                PlaylistId = new List<int>()
             };
         }
     }

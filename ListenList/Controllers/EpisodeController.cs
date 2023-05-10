@@ -1,5 +1,6 @@
 ﻿using ListenList.Models;
 using ListenList.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace ListenList.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EpisodeController : ControllerBase
@@ -20,14 +22,14 @@ namespace ListenList.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllEpisodes()
         {
             return Ok(_episodeRepository.GetAllEpisodes());
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetbyEpisodeId(int id)
         {
             var episode = _episodeRepository.GetbyEpisodeId(id);
             if (episode == null)
@@ -45,7 +47,7 @@ namespace ListenList.Controllers
             
             //episode.Id = Playlist.EpisodePlaylistId;
             _episodeRepository.AddEpisode(episode);
-            return CreatedAtAction(nameof(Get), new { id = episode.Id }, episode);
+            return CreatedAtAction(nameof(GetbyEpisodeId), new { id = episode.Id }, episode);
         }
 
         [HttpPut("{id}")]

@@ -3,10 +3,42 @@ import { getToken } from "./authManager";
 const baseUrl = "/api/episode";
 
 export const getAllEpisodes = () => {
-  return fetch(baseUrl).then((res) => res.json());
+  return getToken().then((token) => {
+    return fetch(baseUrl + "/GetAll", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      } else {
+        throw new Error(
+          "An unknown error occurred while trying to get episodes."
+        );
+      }
+    });
+  });
 };
 
-//get all, get by id, delete, add, edit
+export const getbyEpisodeId = (id) => {
+  return getToken().then((token) => {
+    return fetch(`${baseUrl}/getEpisodeById/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      } else {
+        throw new Error(
+          "An unknown error occurred while trying to get the Episode By Id."
+        );
+      }
+    });
+  });
+};
 
 export const addEpisode = (episode) => {
   return getToken().then((token) => {
@@ -28,13 +60,24 @@ export const addEpisode = (episode) => {
   });
 };
 
-export const editEpisode = (id) => {
+export const updateEpisode = (id) => {
   return getToken().then((token) => {
     return fetch(`${baseUrl}/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const deleteEpisode = (id) => {
+  return getToken().then((token) => {
+    return fetch(`${baseUrl}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   });

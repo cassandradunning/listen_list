@@ -25,7 +25,7 @@ namespace ListenList.Models
 
         [Required]
         [MaxLength(255)]
-        public string About { get; set; }
+        public string Bio { get; set; }
 
         [Required]
         [MaxLength(255)]

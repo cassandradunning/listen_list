@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace ListenList.Controllers
 { 
     [Route("api/[controller]")]
-    [Authorize]
+   [Authorize]
     [ApiController]
     public class UserProfileController : ControllerBase
     {

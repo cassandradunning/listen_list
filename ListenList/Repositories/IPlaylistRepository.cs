@@ -6,9 +6,10 @@ namespace ListenList.Repositories
     public interface IPlaylistRepository
     {
         public Playlist GetPlaylistById(int id);
-        public List<Playlist> GetPlaylist();
+        public List<Playlist> GetAllPlaylist();
         public void AddPlaylist(Playlist playlist);
-      
+        public List<Playlist> GetPlaylistByUserId(int userProfileId);
+
 
     }
 }

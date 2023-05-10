@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ListenList.Models
 {
@@ -17,8 +18,12 @@ namespace ListenList.Models
 
         [Required]
         public string Image { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
 
-        public Playlist Playlist { get; set; }
+        public Category Category { get; set; }
 
-     }
+        public List<int> PlaylistId { get; set; }
+
+    }
 }
