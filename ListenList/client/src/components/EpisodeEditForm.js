@@ -7,7 +7,7 @@ import { getAllCategories } from "../modules/categoryManager"; // Import the fun
 const EpisodeEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [dropdownText, setDropdownText] = useState("Categories");
+  //const [dropdownText, setDropdownText] = useState("Categories");
   const [categories, setCategories] = useState([]);
   const [episode, setEpisode] = useState({
     title: "",
@@ -29,21 +29,6 @@ const EpisodeEdit = () => {
       setCategories(categories);
     });
   }, []);
-
-  // const handleSaveButtonClick = (e) => {
-  //   e.preventDefault();
-  //   const copy = { ...episode };
-
-  //   updateEpisode(copy).then(() => {
-  //     copy.title = "";
-  //     copy.description = "";
-  //     copy.url = "";
-  //     copy.image = "";
-  //     copy.categoryId = "";
-  //     window.alert("Episode updated!");
-  //     navigate(`/playlist`);
-  //   });
-  // };
 
   const handleSaveButtonClick = (evt) => {
     evt.preventDefault();

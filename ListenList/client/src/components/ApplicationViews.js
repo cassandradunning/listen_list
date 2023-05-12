@@ -38,7 +38,7 @@ export default function ApplicationViews({ isLoggedIn, userProfile }) {
         />
         <Route
           path="playlist/:id"
-          element={<EpisodeList isLoggedIn={isLoggedIn} />}
+          element={<EpisodeList userProfileParam={userProfile} />}
         />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />

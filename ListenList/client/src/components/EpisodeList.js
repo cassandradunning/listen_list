@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAllEpisodes,
-  getEpisodeByPlaylistId,
-} from "../modules/episodeManager";
-import AudioPlayer from "./AudioPlayer";
+import { getEpisodeByPlaylistId } from "../modules/episodeManager";
 
 import { Link, useParams } from "react-router-dom";
 
@@ -16,20 +12,16 @@ const EpisodeList = ({ isLoggedIn }) => {
     getEpisodeByPlaylistId(id).then(setEpisodes);
   }, []);
 
-  //is logged in:
-  // deleteEpisode - button > message: Are you sure you want to delete?
-  // editEpisode - button > takes you to episodeeditform.js
-
   return (
     <div>
       <h2>Playlist</h2>
-      {isLoggedIn ? (
-        <>
-          <Link to={`/episodeAdd/${id}`}>
-            <button>Add an Episode</button>
-          </Link>
-        </>
-      ) : null}
+
+      <>
+        <Link to={`/episodeAdd/${id}`}>
+          <button>Add an Episode</button>
+        </Link>
+      </>
+
       <div>&nbsp;</div>
 
       <ul>
@@ -49,20 +41,21 @@ const EpisodeList = ({ isLoggedIn }) => {
                 <img
                   src="https://i.postimg.cc/150MD95T/sound.png"
                   alt={episode.title}
+                  style={{ width: "24px", height: "24px" }}
                 />
               </div>
               <div>&nbsp;</div>
             </Link>
-            {isLoggedIn ? (
-              <>
-                <Link to={`/episodeEdit/${episode.id}`}>
-                  <button>Edit</button>
-                </Link>
-                <Link to={`/episodeDelete/${episode.id}`}>
-                  <button>Delete</button>
-                </Link>
-              </>
-            ) : null}
+            {/* {isLoggedIn ? ( */}
+            <>
+              <Link to={`/episodeEdit/${episode.id}`}>
+                <button>Edit</button>
+              </Link>
+              <Link to={`/episodeDelete/${episode.id}`}>
+                <button>Delete</button>
+              </Link>
+            </>
+            {/* ) : null} */}
             <div>&nbsp;</div>
           </ul>
         ))}
