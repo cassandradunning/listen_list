@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
-import UserProfilePage from "./UserProfilePage";
-// import { getAllPlaylist } from "../modules/playlistManager";
-import { Link, useParams } from "react-router-dom";
-import {
-  getbyPlaylistId,
-  getPlaylistByUserId,
-} from "../modules/playlistManager";
-import { getEpisodeByPlaylistId } from "../modules/episodeManager";
+import { Row, Col } from "reactstrap";
+import { Link } from "react-router-dom";
+import { getPlaylistByUserId } from "../modules/playlistManager";
 
 export default function PlaylistList({ playlistParam, userProfileParam }) {
   const [playlist, setPlaylist] = useState([]);
