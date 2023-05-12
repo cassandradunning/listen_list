@@ -17,15 +17,23 @@ export default function Header({ isLoggedIn, userProfile }) {
 
   return (
     <div>
-      <Navbar color="dark" dark expand="md">
-        <NavbarBrand tag={RRNavLink} to="/">
-          Listen List
-        </NavbarBrand>
+      <Navbar color="light" light expand="md">
+        <div className="front_image">
+          <a href="/">
+            <img
+              src="https://i.postimg.cc/Y2RGLpgc/Listen-List.png"
+              style={{ width: 250, height: 175 }}
+              alt="Listen List"
+            ></img>
+          </a>
+        </div>
+        <NavbarBrand tag={RRNavLink} to="/"></NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
             {isLoggedIn && (
               <>
+                <NavItem></NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/userProfile">
                     Profile
@@ -61,7 +69,7 @@ export default function Header({ isLoggedIn, userProfile }) {
           <Nav navbar>
             {userProfile && (
               <NavItem>
-                <NavLink>Welcome, {userProfile.name}!</NavLink>
+                <NavLink>Hi, {userProfile.username}!</NavLink>
               </NavItem>
             )}
           </Nav>

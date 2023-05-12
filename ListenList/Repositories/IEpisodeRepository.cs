@@ -8,6 +8,7 @@ namespace ListenList.Repositories
     {
         public List<Episode> GetAllEpisodes();
         public object GetbyEpisodeId(int id);
+        public List<Episode> GetEpisodeByPlaylistId(int PlaylistId);
         public void AddEpisode(Episode quote);
         public void UpdateEpisode(Episode episode);
 

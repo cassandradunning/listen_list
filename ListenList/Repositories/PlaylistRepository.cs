@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ListenList.Models;
 using ListenList.Repositories;
 using ListenList.Utils;
@@ -12,7 +13,7 @@ namespace ListenList.Repositories
     {
         public PlaylistRepository(IConfiguration configuration) : base(configuration) { }
 
-        
+
 
         public Playlist GetPlaylistById(int id)
         {
@@ -38,7 +39,6 @@ namespace ListenList.Repositories
                             Name = DbUtils.GetString(reader, "PlaylistName"),
                             Image = DbUtils.GetString(reader, "PlaylistImage"),
                             UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
-
                         };
                     }
                     reader.Close();
@@ -47,7 +47,7 @@ namespace ListenList.Repositories
                 }
             }
         }
-        public List<Playlist> GetPlaylist()
+        public List<Playlist> GetAllPlaylist()
         {
             using (var conn = Connection)
             {
@@ -55,22 +55,44 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT  p.Id, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId
+                        SELECT  p.Id AS PlaylistId, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId,
+                        ep.Id AS EpisodePlaylistId, ep.EpisodeId As EpisodeId,
+                        e.Title AS EpisodeTitle, e.Description AS EpisodeDescription, e.Image As EpisodeImage, e.URL AS EpisodeURL, e.CategoryId AS EpisodeCategoryId
                         FROM Playlist p
+                        LEFT JOIN EpisodePlaylist ep ON p.Id = ep.PlaylistId
+                        LEFT JOIN Episode e ON ep.EpisodeId = e.Id
                         ";
-                   
+
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         var playlists = new List<Playlist>();
                         while (reader.Read())
                         {
-                            playlists.Add(new Playlist()
+                            var playlistId = reader.GetInt32(reader.GetOrdinal("PlaylistId"));
+                            var existingPlaylist = playlists.FirstOrDefault(c => c.Id == playlistId);
+                            if (existingPlaylist == null)
                             {
-                                Id = DbUtils.GetInt(reader, "Id"),
-                                Name = DbUtils.GetString(reader, "PlaylistName"),
-                                Image = DbUtils.GetString(reader, "PlaylistImage"),
-                                UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
-                            }); 
+                                existingPlaylist = new Playlist()
+                                {
+                                    Id = playlistId,
+                                    Name = reader.GetString(reader.GetOrdinal("PlaylistName")),
+                                    Image = reader.GetString(reader.GetOrdinal("PlaylistImage")),
+                                    Episodes = new List<Episode>()
+                                };
+                                playlists.Add(existingPlaylist);
+                            }
+                            if (!reader.IsDBNull(reader.GetOrdinal("EpisodePlaylistId")))
+                            {
+                                existingPlaylist.Episodes.Add(new Episode()
+                                {
+                                    Id = DbUtils.GetInt(reader, "EpisodeId"),
+                                    Title = DbUtils.GetString(reader, "EpisodeTitle"),
+                                    Description = DbUtils.GetString(reader, "EpisodeDescription"),
+                                    Image = DbUtils.GetString(reader, "EpisodeImage"),
+                                    URL = DbUtils.GetString(reader, "EpisodeURL"),
+                                    CategoryId = DbUtils.GetInt(reader, "EpisodeCategoryId"),
+                                });
+                            }
                         }
                         return playlists;
                     }
@@ -92,39 +114,81 @@ namespace ListenList.Repositories
                     DbUtils.AddParameter(cmd, "@UserProfileId", playlist.UserProfileId);
 
                     playlist.Id = (int)cmd.ExecuteScalar();
+
+                    //foreach (var e in playlist.EpisodeId)
+                    //{
+                    //    cmd.CommandText = @"
+                    //                INSERT INTO EpisodePlaylist (EpisodeId, PlaylistId)
+                    //                VALUES(@EpisodeId, @PlaylistId)";
+                    //    cmd.Parameters.Clear();
+                    //    cmd.Parameters.AddWithValue("@PlaylistId", playlist.Id);
+                    //    cmd.Parameters.AddWithValue("@EpisodeId", e);
+
+                    //    cmd.ExecuteNonQuery();
+
+                    //}
                 }
             }
         }
 
-       
+
+        public List<Playlist> GetPlaylistByUserId(int userProfileId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT  p.Id AS PlaylistId, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId,
+                        ep.Id AS EpisodePlaylistId, ep.EpisodeId As EpisodeId,
+                        e.Title AS EpisodeTitle, e.Description AS EpisodeDescription, e.Image As EpisodeImage, e.URL AS EpisodeURL, e.CategoryId AS EpisodeCategoryId
+                        FROM Playlist p
+                        LEFT JOIN EpisodePlaylist ep ON p.Id = ep.PlaylistId
+                        LEFT JOIN Episode e ON ep.EpisodeId = e.Id
+                        WHERE p.UserProfileId = @UserProfileId
+                        ";
+                    DbUtils.AddParameter(cmd, "@UserProfileId", userProfileId);
 
 
-        //private string PlaylistQuery
-        //{
-        //    get
-        //    {
-        //        return @"SELECT  p.Id AS PlaylistId, p.[Name] AS PlaylistName, p.Image AS PlaylistImage, p.UserProfileId AS UserProfileId,
-        //                e.Title AS EpisodeTitle, e.Description, e.URL AS EpisodeURL, e.Image AS EpisodeImage,
-        //                up.Username
-        //                FROM Playlist p
-        //                JOIN EpisodePlaylist ep ON ep.PlaylistId = p.Id
-        //                JOIN Episode e ON e.Id = ep.EpisodeId
-        //                JOIN UserProfile up on p.UserProfileId = up.Id";
-        //    }
-        //}
-
-        //private Playlist NewPlaylist(SqlDataReader reader)
-        //{
-        //    return new Playlist()
-        //    {
-        //        Id = DbUtils.GetInt(reader, "Id"),
-        //        Name = DbUtils.GetString(reader, "Name"),
-        //        Image = DbUtils.GetString(reader, "Image"),
-        //        UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
-        //    };
-        //}
-
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var playlists = new List<Playlist>();
+                        while (reader.Read())
+                        {
+                            var playlistId = reader.GetInt32(reader.GetOrdinal("PlaylistId"));
+                            var existingPlaylist = playlists.FirstOrDefault(c => c.Id == playlistId);
+                            if (existingPlaylist == null)
+                            {
+                                existingPlaylist = new Playlist()
+                                {
+                                    Id = playlistId,
+                                    Name = reader.GetString(reader.GetOrdinal("PlaylistName")),
+                                    Image = reader.GetString(reader.GetOrdinal("PlaylistImage")),
+                                    Episodes = new List<Episode>()
+                                };
+                                playlists.Add(existingPlaylist);
+                            }
+                            if (!reader.IsDBNull(reader.GetOrdinal("EpisodePlaylistId")))
+                            {
+                                existingPlaylist.Episodes.Add(new Episode()
+                                {
+                                    Id = DbUtils.GetInt(reader, "EpisodeId"),
+                                    Title = DbUtils.GetString(reader, "EpisodeTitle"),
+                                    Description = DbUtils.GetString(reader, "EpisodeDescription"),
+                                    Image = DbUtils.GetString(reader, "EpisodeImage"),
+                                    URL = DbUtils.GetString(reader, "EpisodeURL"),
+                                    CategoryId = DbUtils.GetInt(reader, "EpisodeCategoryId"),
+                                });
+                            }
+                        }
+                        return playlists;
+                    }
+                }
+            }
+        }
 
     }
-
 }
+
+

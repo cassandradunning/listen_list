@@ -33,7 +33,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Header isLoggedIn={isLoggedIn} userProfile={userProfile} />
-        <ApplicationViews isLoggedIn={isLoggedIn} />
+        <ApplicationViews isLoggedIn={isLoggedIn} userProfile={userProfile} />
       </BrowserRouter>
     </div>
   );

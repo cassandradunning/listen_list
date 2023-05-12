@@ -1,5 +1,6 @@
 ﻿using ListenList.Models;
 using ListenList.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace ListenList.Controllers
 {
+       [Authorize]
         [Route("api/[controller]")]
         [ApiController]
         public class PlaylistController : ControllerBase
@@ -20,8 +22,8 @@ namespace ListenList.Controllers
             }
 
            
-            [HttpGet("{id}")]
-            public IActionResult Get(int id)
+            [HttpGet("getPlaylistById/{id}")]
+            public IActionResult GetPlaylistById(int id)
             {
                 var playlist = _playlistRepository.GetPlaylistById(id);
                 if (playlist == null)
@@ -31,23 +33,31 @@ namespace ListenList.Controllers
                 return Ok(playlist);
             }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("userProfile/{userProfileId}")]
+        public IActionResult GetPlaylistByUserId(int userProfileId)
         {
-            return Ok(_playlistRepository.GetPlaylist());
+            var playlist = _playlistRepository.GetPlaylistByUserId(userProfileId);
+            if (playlist == null)
+            {
+                return NotFound();
+            }
+            return Ok(playlist);
+        }
+
+        [HttpGet("GetAllPlaylist")]
+        public IActionResult GetAllPlaylist()
+        {
+            return Ok(_playlistRepository.GetAllPlaylist());
         }
 
         [HttpPost]
             public IActionResult Post(Playlist playlist)
             {
                 var currentUserProfile = GetCurrentUserProfile();
-                if (currentUserProfile.Id != playlist.UserProfileId)
-                {
-                    return Unauthorized();
-                }
+           
                 playlist.UserProfileId = currentUserProfile.Id;
                 _playlistRepository.AddPlaylist(playlist);
-                return CreatedAtAction(nameof(Get), new { id = playlist.Id }, playlist);
+                return CreatedAtAction(nameof(GetPlaylistById), new { id = playlist.Id }, playlist);
             }
 
         
