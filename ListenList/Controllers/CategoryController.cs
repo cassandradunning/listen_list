@@ -17,7 +17,7 @@ namespace ListenList.Controllers
      
         }
 
-        [HttpGet]
+        [HttpGet("GetAllCategories")]
         public IActionResult GetAllCategories()
         {
             return Ok(_categoryRepository.GetAllCategories());

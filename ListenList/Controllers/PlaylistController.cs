@@ -22,7 +22,7 @@ namespace ListenList.Controllers
             }
 
            
-            [HttpGet("{id}")]
+            [HttpGet("getPlaylistById/{id}")]
             public IActionResult GetPlaylistById(int id)
             {
                 var playlist = _playlistRepository.GetPlaylistById(id);
@@ -44,7 +44,7 @@ namespace ListenList.Controllers
             return Ok(playlist);
         }
 
-        [HttpGet]
+        [HttpGet("GetAllPlaylist")]
         public IActionResult GetAllPlaylist()
         {
             return Ok(_playlistRepository.GetAllPlaylist());

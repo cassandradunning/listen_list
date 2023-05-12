@@ -3,7 +3,7 @@ const baseUrl = "/api/playlist";
 
 export const getAllPlaylist = () => {
   return getToken().then((token) => {
-    return fetch(baseUrl + "/GetAll", {
+    return fetch(`${baseUrl}/GetAllPlaylist`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -13,15 +13,16 @@ export const getAllPlaylist = () => {
         return resp.json();
       } else {
         throw new Error(
-          "An unknown error occurred while trying to get categories."
+          "An unknown error occurred while trying to get playlists."
         );
       }
     });
   });
 };
-export const getPlaylistByUserId = (id) => {
+
+export const getPlaylistByUserId = (userProfileId) => {
   return getToken().then((token) => {
-    return fetch(`${baseUrl}/userProfile/${id}`, {
+    return fetch(`${baseUrl}/userProfile/${userProfileId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

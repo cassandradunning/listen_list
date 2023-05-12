@@ -4,16 +4,16 @@ import { Container, Col, Row } from "reactstrap";
 import { getPlaylistByUserId } from "../modules/playlistManager";
 import PlaylistList from "./PlaylistList";
 
-const UserProfilePage = ({ userProfile }) => {
+const UserProfilePage = ({ userProfileParam }) => {
   const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
-    if (userProfile?.id) {
-      getPlaylistByUserId(userProfile.id).then((playlists) => {
+    if (userProfileParam?.id) {
+      getPlaylistByUserId(userProfileParam.id).then((playlists) => {
         setPlaylists(playlists);
       });
     }
-  }, [userProfile]);
+  }, [userProfileParam]);
 
   return (
     <Container>
@@ -21,13 +21,14 @@ const UserProfilePage = ({ userProfile }) => {
         <Col md={4}>
           <div>
             <img
-              src={userProfile?.image}
-              alt="{userProfile?.bio}"
+              src={userProfileParam?.image}
+              alt={userProfileParam?.bio}
               style={{ width: "200px" }}
             />
-            <h4>{userProfile?.username}</h4>
-            <h4>{userProfile?.bio}</h4>
+            <h4>Hi I'm {userProfileParam?.username}</h4>
+            <h5>{userProfileParam?.bio}</h5>
           </div>
+          <div>&nbsp;</div>
           <Link to={`/playlistAddForm`}>
             <button>Create a Playlist</button>
           </Link>
@@ -37,7 +38,10 @@ const UserProfilePage = ({ userProfile }) => {
             <h3>Playlists</h3>
 
             <ul>
-              <PlaylistList playlistParam={playlists} />
+              <PlaylistList
+                playlistParam={playlists}
+                userProfileParam={userProfileParam}
+              />
             </ul>
           </div>
         </Col>

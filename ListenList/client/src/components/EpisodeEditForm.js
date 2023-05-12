@@ -7,46 +7,68 @@ import { getAllCategories } from "../modules/categoryManager"; // Import the fun
 const EpisodeEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [dropdownText, setDropdownText] = useState("Categories");
   const [categories, setCategories] = useState([]);
   const [episode, setEpisode] = useState({
     title: "",
     description: "",
     url: "",
     image: "",
-    categoryId: "[]",
-    // playlistId: [], we are not giving them the opportunity to change playlists
+    categoryId: "",
+    playlistId: [id], //we are not giving them the opportunity to change playlists
   });
 
   useEffect(() => {
     getbyEpisodeId(id).then((fetchedEpisode) => {
       setEpisode(fetchedEpisode);
     });
-  }, [id]);
-
-  useEffect(() => {
-    getAllCategories().then(setCategories);
   }, []);
 
-  const handleSaveButtonClick = (e) => {
-    e.preventDefault();
-    const copy = { ...episode };
+  useEffect(() => {
+    getAllCategories().then((categories) => {
+      setCategories(categories);
+    });
+  }, []);
 
-    updateEpisode(copy)
-      .then(() => {
-        copy.title = "";
-        copy.description = "";
-        copy.url = "";
-        copy.image = "";
-        copy.categoryId = "";
-      })(window.alert("Episode updated!"))
-      .then((p) => {
-        navigate("/playlist/id");
-      });
+  // const handleSaveButtonClick = (e) => {
+  //   e.preventDefault();
+  //   const copy = { ...episode };
+
+  //   updateEpisode(copy).then(() => {
+  //     copy.title = "";
+  //     copy.description = "";
+  //     copy.url = "";
+  //     copy.image = "";
+  //     copy.categoryId = "";
+  //     window.alert("Episode updated!");
+  //     navigate(`/playlist`);
+  //   });
+  // };
+
+  const handleSaveButtonClick = (evt) => {
+    evt.preventDefault();
+    updateEpisode(episode);
+    window.alert("Episode updated!");
+    navigate(`/userProfile`);
+  };
+  const handleInputChange = (evt) => {
+    const key = evt.target.id;
+    const value = evt.target.value;
+
+    const episodeCopy = { ...episode };
+    episodeCopy[key] = value;
+    setEpisode(episodeCopy);
   };
 
+  // const handleDropDownCategories = (e) => {
+  //   e.preventDefault();
+  //   setDropdownText(e.target.name);
+  // };
+
   return (
-    <Form onSubmit={handleSaveButtonClick}>
+    <Form>
       <fieldset>
+        {console.log(episode)}
         <FormGroup>
           <Label for="title">Title</Label>
           <Input
@@ -55,11 +77,7 @@ const EpisodeEdit = () => {
             value={episode.title}
             className="form-control"
             placeholder="Episode Title"
-            onChange={(e) => {
-              const copy = { ...episode.title };
-              copy.title = e.target.value;
-              setEpisode(copy);
-            }}
+            onChange={handleInputChange}
           />
         </FormGroup>
         <FormGroup>
@@ -70,11 +88,7 @@ const EpisodeEdit = () => {
             value={episode.description}
             className="form-control"
             placeholder="Episode Description"
-            onChange={(e) => {
-              const copy = { ...episode.description };
-              copy.description = e.target.value;
-              setEpisode(copy);
-            }}
+            onChange={handleInputChange}
           />
         </FormGroup>
         <FormGroup>
@@ -85,48 +99,76 @@ const EpisodeEdit = () => {
             value={episode.url}
             className="form-control"
             placeholder="Episode Url"
-            onChange={(e) => {
-              const copy = { ...episode.url };
-              copy.url = e.target.value;
-              setEpisode(copy);
-            }}
+            onChange={handleInputChange}
           />
         </FormGroup>
         <FormGroup>
           <Label for="image">Image</Label>
           <Input
             id="image"
-            type="image"
+            type="text"
             value={episode.image}
             className="form-control"
             placeholder="Episode Image"
-            onChange={(e) => {
-              const copy = { ...episode.image };
-              copy.image = e.target.value;
-              setEpisode(copy);
-            }}
+            onChange={handleInputChange}
           />
         </FormGroup>
-        <FormGroup>
-          <Label for="category">Category</Label>
-          <select
+        {/* <FormGroup>
+          <Label for="category">Category</Label> */}
+        {/* <select
             id="category"
             value={episode.categoryId}
             className="form-control"
-            onChange={(e) => {
-              const copy = { ...episode };
-              copy.categoryId = e.target.value;
-              setEpisode(copy);
-            }}
           >
-            <option value="">Select a category</option>
+            <option>Select a category</option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+              <option
+                onClick={(e) => {
+                  const copy = { ...episode };
+                  copy.categoryId = e.target.value;
+                  setEpisode(copy);
+                }}
+                key={category.id}
+                value={category.id}
+              >
                 {category.name}
               </option>
             ))}
-          </select>
+          </select> */}
+
+        <FormGroup>
+          <Input type="select" id="categoryId">
+            <option value="">Select Category</option>
+            {categories.map((t) => {
+              return (
+                <option
+                  onClick={handleInputChange}
+                  value={t.id}
+                  key={t.id}
+                  id="categoryId"
+                >
+                  {t.name}
+                </option>
+              );
+            })}
+          </Input>
         </FormGroup>
+
+        {/* <Label for="category">Category</Label>
+          <Input
+            type="select"
+            id="categoryId"
+            value={episode.categoryId}
+            onChange={handleInputChange} // Add onChange event handler
+          >
+            <option value="">Select Category</option>
+            {categories.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </Input>
+        </FormGroup> */}
 
         <FormGroup>
           <button onClick={handleSaveButtonClick}>Update Episode </button>

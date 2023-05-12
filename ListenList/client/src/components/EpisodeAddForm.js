@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+// import { Form, FormGroup, Label, Input } from "reactstrap";
 import { Form, FormGroup, Label, Input } from "reactstrap";
+
 import { addEpisode } from "../modules/episodeManager";
 import { getAllCategories } from "../modules/categoryManager"; // Import the function to get categories
 
 export default function EpisodeAddForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+
   const [episode, setEpisode] = useState({
     title: "",
     description: "",
     url: "",
     image: "",
-    categoryId: [],
-    playlistId: [],
+    categoryId: "",
+    playlistId: [id],
   });
 
   useEffect(() => {
@@ -23,22 +27,20 @@ export default function EpisodeAddForm() {
   const handleSaveButtonClick = (e) => {
     e.preventDefault();
 
-    addEpisode(episode)
-      .then(() => {
-        const copy = { ...episode };
-        copy.title = "";
-        copy.description = "";
-        copy.url = "";
-        copy.image = "";
-        copy.categoryId = "";
-      })(window.alert("Episode added!"))
-      .then((p) => {
-        navigate("/playlist/{id}");
-      });
+    addEpisode(episode).then(() => {
+      const copy = { ...episode };
+      copy.title = "";
+      copy.description = "";
+      copy.url = "";
+      copy.image = "";
+      copy.categoryId = "";
+      window.alert("Episode added!");
+      navigate(`/playlist/${id}`);
+    });
   };
 
   return (
-    <Form onSubmit={handleSaveButtonClick}>
+    <Form>
       <fieldset>
         <FormGroup>
           <Label for="title">Title</Label>
@@ -49,7 +51,7 @@ export default function EpisodeAddForm() {
             className="form-control"
             placeholder="Episode Title"
             onChange={(e) => {
-              const copy = { ...episode.title };
+              const copy = { ...episode };
               copy.title = e.target.value;
               setEpisode(copy);
             }}
@@ -64,7 +66,7 @@ export default function EpisodeAddForm() {
             className="form-control"
             placeholder="Episode Description"
             onChange={(e) => {
-              const copy = { ...episode.description };
+              const copy = { ...episode };
               copy.description = e.target.value;
               setEpisode(copy);
             }}
@@ -79,7 +81,7 @@ export default function EpisodeAddForm() {
             className="form-control"
             placeholder="Episode Url"
             onChange={(e) => {
-              const copy = { ...episode.url };
+              const copy = { ...episode };
               copy.url = e.target.value;
               setEpisode(copy);
             }}
@@ -89,12 +91,12 @@ export default function EpisodeAddForm() {
           <Label for="image">Image</Label>
           <Input
             id="image"
-            type="image"
+            type="text"
             value={episode.image}
             className="form-control"
             placeholder="Episode Image"
             onChange={(e) => {
-              const copy = { ...episode.image };
+              const copy = { ...episode };
               copy.image = e.target.value;
               setEpisode(copy);
             }}
@@ -102,6 +104,7 @@ export default function EpisodeAddForm() {
         </FormGroup>
         <FormGroup>
           <Label for="category">Category</Label>
+
           <select
             id="category"
             value={episode.categoryId}

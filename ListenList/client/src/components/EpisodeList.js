@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { getAllEpisodes } from "../modules/episodeManager";
+import {
+  getAllEpisodes,
+  getEpisodeByPlaylistId,
+} from "../modules/episodeManager";
+import AudioPlayer from "./AudioPlayer";
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 //PLAYLIST LISTS EPISODES
-const EpisodeList = ({ userProfileId }) => {
-  const [episode, setEpisode] = useState([]);
-
-  const getEpisode = () => {
-    getAllEpisodes().then((episode) => setEpisode(episode));
-  };
+const EpisodeList = ({ isLoggedIn }) => {
+  const { id } = useParams();
+  const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    getEpisode();
-  }, [userProfileId]);
+    getEpisodeByPlaylistId(id).then(setEpisodes);
+  }, []);
 
   //is logged in:
   // deleteEpisode - button > message: Are you sure you want to delete?
@@ -21,15 +22,18 @@ const EpisodeList = ({ userProfileId }) => {
 
   return (
     <div>
-      <h2> {userProfileId}'s playlist:</h2>
-      <Link to={`/episodeList`}>
-        <button>Add an Episode</button>
-      </Link>
-
+      <h2>Playlist</h2>
+      {isLoggedIn ? (
+        <>
+          <Link to={`/episodeAdd/${id}`}>
+            <button>Add an Episode</button>
+          </Link>
+        </>
+      ) : null}
       <div>&nbsp;</div>
 
       <ul>
-        {episode.map((episode) => (
+        {episodes.map((episode) => (
           <ul key={episode.id}>
             <div style={{ margin: "100px" }}>
               <img
@@ -40,15 +44,25 @@ const EpisodeList = ({ userProfileId }) => {
             </div>
             <h3>{episode.title}</h3>
             <p>{episode.description}</p>
-            <audio src={episode.url} controls />
-            <div>&nbsp;</div>
-
-            <Link to={`/episodes/\${episode.id}/edit`}>
-              <button>Edit</button>
+            <Link to={episode.url}>
+              <div className="audio">
+                <img
+                  src="https://i.postimg.cc/150MD95T/sound.png"
+                  alt={episode.title}
+                />
+              </div>
+              <div>&nbsp;</div>
             </Link>
-            <Link to={`/episodes/\${episode.id}/delete`}>
-              <button>Delete</button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link to={`/episodeEdit/${episode.id}`}>
+                  <button>Edit</button>
+                </Link>
+                <Link to={`/episodeDelete/${episode.id}`}>
+                  <button>Delete</button>
+                </Link>
+              </>
+            ) : null}
             <div>&nbsp;</div>
           </ul>
         ))}
@@ -58,3 +72,5 @@ const EpisodeList = ({ userProfileId }) => {
 };
 
 export default EpisodeList;
+//  <audio src={episode.url} controls />
+//<AudioPlayer src={episode.url} />

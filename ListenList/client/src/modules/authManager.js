@@ -27,17 +27,6 @@ const _saveUser = (userProfile) => {
   );
 };
 
-// const _userInfo = (firebaseUserId) => {
-//   return getToken().then((token) =>
-//     fetch(`${_apiUrl}/${firebaseUserId}`, {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     }).then((resp) => resp.ok)
-//   );
-// };
-
 export const getToken = () => {
   const currentUser = firebase.auth().currentUser;
   if (!currentUser) {

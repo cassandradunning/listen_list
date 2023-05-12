@@ -19,11 +19,13 @@ export default function Header({ isLoggedIn, userProfile }) {
     <div>
       <Navbar color="light" light expand="md">
         <div className="front_image">
-          <img
-            src="https://i.postimg.cc/Y2RGLpgc/Listen-List.png"
-            style={{ width: 250, height: 175 }}
-            alt="Listen List"
-          ></img>
+          <a href="/">
+            <img
+              src="https://i.postimg.cc/Y2RGLpgc/Listen-List.png"
+              style={{ width: 250, height: 175 }}
+              alt="Listen List"
+            ></img>
+          </a>
         </div>
         <NavbarBrand tag={RRNavLink} to="/"></NavbarBrand>
         <NavbarToggler onClick={toggle} />
@@ -31,6 +33,7 @@ export default function Header({ isLoggedIn, userProfile }) {
           <Nav className="mr-auto" navbar>
             {isLoggedIn && (
               <>
+                <NavItem></NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/userProfile">
                     Profile

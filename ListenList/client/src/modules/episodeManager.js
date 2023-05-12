@@ -4,7 +4,7 @@ const baseUrl = "/api/episode";
 
 export const getAllEpisodes = () => {
   return getToken().then((token) => {
-    return fetch(baseUrl + "/GetAll", {
+    return fetch(`${baseUrl}/GetAllEpisodes`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -40,6 +40,25 @@ export const getbyEpisodeId = (id) => {
   });
 };
 
+export const getEpisodeByPlaylistId = (playlistId) => {
+  return getToken().then((token) => {
+    return fetch(`${baseUrl}/playlist/${playlistId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      } else {
+        throw new Error(
+          "An unknown error occurred while trying to get the Episode By Id."
+        );
+      }
+    });
+  });
+};
+
 export const addEpisode = (episode) => {
   return getToken().then((token) => {
     return fetch(baseUrl, {
@@ -54,20 +73,27 @@ export const addEpisode = (episode) => {
         console.log("Episode added successfully!");
         return resp.json();
       } else {
-        throw new Error("An error occurred while trying to add an episode.");
+        throw new Error("An error occurred while trying to add a episode.");
       }
     });
   });
 };
 
-export const updateEpisode = (id) => {
+export const updateEpisode = (episode) => {
   return getToken().then((token) => {
-    return fetch(`${baseUrl}/${id}`, {
+    return fetch(`${baseUrl}/${episode.id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(episode),
+    }).then((resp) => {
+      if (resp.ok) {
+        console.log("Episode updated successfully!");
+      } else {
+        throw new Error("An error occurred while trying to update a episode.");
+      }
     });
   });
 };

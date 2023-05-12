@@ -9,7 +9,7 @@ export default function Register() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [username, setUsername] = useState();
-  const [about, setAbout] = useState();
+  const [bio, setBio] = useState();
   const [image, setImage] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
@@ -19,7 +19,7 @@ export default function Register() {
     if (password && password !== confirmPassword) {
       alert("Passwords don't match. Do better.");
     } else {
-      const userProfile = { name, email, username, about, image };
+      const userProfile = { name, email, username, bio, image };
       register(userProfile, password).then(() => navigate("/"));
     }
   };
@@ -54,12 +54,12 @@ export default function Register() {
           />
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="about">About</Label>
+          <Label htmlFor="bio">Bio</Label>
           <Input
-            id="about"
+            id="bio"
             type="text"
             autoFocus
-            onChange={(e) => setAbout(e.target.value)}
+            onChange={(e) => setBio(e.target.value)}
           />
         </FormGroup>
         <FormGroup>

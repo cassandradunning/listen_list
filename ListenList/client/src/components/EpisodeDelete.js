@@ -15,12 +15,13 @@ const EpisodeDelete = () => {
   const handleDeleteButtonClick = (e) => {
     e.preventDefault();
 
-    deleteEpisode(episode.id, episode);
-    navigate("../../playlist/{id}");
+    deleteEpisode(episode.id, episode).then(() => {
+      navigate(`/userProfile`);
+    });
   };
 
   const handleCancelButtonClick = (e) => {
-    navigate("../../playlist/{id}");
+    navigate(`/userProfile`);
   };
 
   return (

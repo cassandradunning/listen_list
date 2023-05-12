@@ -21,17 +21,28 @@ namespace ListenList.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllEpisodes")]
         public IActionResult GetAllEpisodes()
         {
             return Ok(_episodeRepository.GetAllEpisodes());
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("getEpisodeById/{id}")]
         public IActionResult GetbyEpisodeId(int id)
         {
             var episode = _episodeRepository.GetbyEpisodeId(id);
+            if (episode == null)
+            {
+                return NotFound();
+            }
+            return Ok(episode);
+        }
+
+        [HttpGet("playlist/{PlaylistId}")]
+        public IActionResult GetEpisodeByPlaylistId(int PlaylistId)
+        {
+            var episode = _episodeRepository.GetEpisodeByPlaylistId(PlaylistId);
             if (episode == null)
             {
                 return NotFound();

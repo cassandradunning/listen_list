@@ -4,7 +4,7 @@ const baseUrl = "/api/category";
 
 export const getAllCategories = () => {
   return getToken().then((token) => {
-    return fetch(baseUrl + "/GetAll", {
+    return fetch(`${baseUrl}/GetAllCategories`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

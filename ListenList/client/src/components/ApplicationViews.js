@@ -13,34 +13,35 @@ import EpisodeEditForm from "./EpisodeEditForm";
 export default function ApplicationViews({ isLoggedIn, userProfile }) {
   return (
     <Routes>
-      <Route path="home" element={<Home />} />
       <Route path="/">
+        <Route index element={<Home />} />
         <Route
-          index
-          element={isLoggedIn ? <EpisodeList /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="add"
+          path="episodeAdd/:id"
           element={isLoggedIn ? <EpisodeAddForm /> : <Navigate to="/login" />}
         />
         <Route
-          path="edit"
+          path="episodeEdit/:id"
           element={isLoggedIn ? <EpisodeEditForm /> : <Navigate to="/login" />}
         />
         <Route
-          path="delete"
+          path="episodeDelete/:id"
           element={isLoggedIn ? <EpisodeDelete /> : <Navigate to="/login" />}
         />
+
         <Route
           path="playlistAddForm"
           element={isLoggedIn ? <PlaylistAddForm /> : <Navigate to="/login" />}
         />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
         <Route
           path="userProfile"
-          element={<UserProfilePage userProfile={userProfile} />}
+          element={<UserProfilePage userProfileParam={userProfile} />}
         />
+        <Route
+          path="playlist/:id"
+          element={<EpisodeList isLoggedIn={isLoggedIn} />}
+        />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         <Route path="*" element={<p>Whoops, nothing here...</p>} />
       </Route>
     </Routes>

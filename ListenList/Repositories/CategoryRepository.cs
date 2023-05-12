@@ -23,10 +23,9 @@ namespace ListenList.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT 
-                                        c.Id AS CategoryId, c.Name AS CategoryName,
-                                        e.Title AS EpisodeTitle, e.Description AS EpisodeDescription, e.Image As EpisodeImage, e.URL AS EpisodeURL, e.CategoryId AS EpisodeCategoryId
+                                        c.Id AS CategoryId, c.Name AS CategoryName
                                         FROM Category c
-                                        LEFT JOIN Episode e ON e.CategoryId = c.Id";
+                                        ";
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
