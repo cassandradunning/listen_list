@@ -5,7 +5,7 @@ Welcome to Listen List, a website where you share your podcasts with your friend
 
 I'm always asked the question: what podcasts are you listening to? I found that there wasn't a great way to log or share my recommendations with my friends. That's how Listen List was born. 
 
-- Registrations: Sign up as a user to create and share your own lists.
+- Registration: Sign up as a user to create and share your own lists.
 - Profile: View a user's profile with listed playlists.
 - Playlists: Create playlists, add edit, or removes episodes   
 - Browse: Playlists and suggestions
